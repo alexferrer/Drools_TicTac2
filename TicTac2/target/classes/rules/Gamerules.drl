@@ -1,0 +1,83 @@
+package com.tictac2
+import java.util.ArrayList
+import com.tictac2.PlayGame
+
+//if next move is a win, set cell value to 10
+rule "evalue cells by row"
+    when 
+     c : Cell(player == ' ', value < 9)
+     m : ArrayList( size == 2)
+		  from collect ( Cell ( player == "x" , row == c.getRow() ) )
+    then
+       modify ( c ) { setValue(9) }; //mark as next winning move
+       System.out.println( "Identified next win cell in row:"+c.getRow()+"  cell="+c );
+       
+end     
+
+//if next move is a win, set cell value to 10
+rule "evalue cells by col"
+    when 
+     c : Cell(player == ' ', value < 9)
+     m : ArrayList( size == 2)
+		  from collect ( Cell ( player == "x" , col == c.getCol() ) )
+    then
+       System.out.println( "Identified next win cell in col:"+c.getCol()+"  cell="+c );
+       modify ( c ) { setValue(9) }; //mark as next winning move
+end     
+
+rule "evalue defense by row"
+    when 
+     c : Cell(player == ' ', value < 8)
+     m : ArrayList( size == 2)
+		  from collect ( Cell ( player == "y" , row == c.getRow() ) )
+    then
+       modify ( c ) { setValue(8) }; 
+       System.out.println( "Identified player danger cell in row:"+c.getRow()+"  cell="+c );
+       
+end     
+
+rule "evalue defense by col"
+    when 
+     c : Cell(player == ' ', value < 8)
+     m : ArrayList( size == 2)
+		  from collect ( Cell ( player == "y" , col == c.getCol() ) )
+    then
+       System.out.println( "Identified player danger cell in col:"+c.getCol()+"  cell="+c );
+       modify ( c ) { setValue(8) }; //mark as next winning move
+end     
+
+
+
+//determine if game is over
+rule "game over by col"
+   when
+     t : Context(gameover == false )
+     c : Cell(player != ' ') 
+     m : ArrayList( size == 3)
+		  from collect ( Cell( player == c.getPlayer() , col == c.getCol() ) )
+   then
+     PlayGame.printArray( "Game over. Player "+c.getPlayer()+" wins on column:"+c.getCol() );
+     modify (t) { setGameover(true) };
+end   
+
+//determine if game is over
+rule "game over by row"
+   when
+     t : Context(gameover == false )
+     c : Cell(player != ' ') 
+     m : ArrayList( size == 3)
+		  from collect ( Cell( player == c.getPlayer() , row == c.getRow() ) )
+   then
+     PlayGame.printArray( "Game over. Player "+c.getPlayer()+" wins on row:"+c.getRow() );
+     modify (t) { setGameover(true) };
+end   
+
+
+rule "game over by tie"
+   when
+     t : Context(gameover == false )
+     not ( Cell(player == ' ') )  //no empty cells! 
+   then
+     PlayGame.printArray( "Game over. It is a Tie!!" );
+     modify (t) { setGameover(true) };
+end   
