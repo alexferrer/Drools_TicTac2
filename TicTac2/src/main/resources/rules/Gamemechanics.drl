@@ -1,0 +1,55 @@
+package com.tictac2
+
+import java.util.ArrayList
+import com.tictac2.PlayGame
+import java.util.Scanner;
+
+
+rule "ai make move"
+	when
+		t : Context(gameover == false, turn == "x" )
+		c : Cell( player == " ")
+			not ( Cell( value > c.getValue() , player == " " ) )
+	then
+		modify ( c ) { setPlayer("x") };
+		System.out.println("*               AI making move: "+c );
+		modify ( t ) { setTurn("y") };
+		PlayGame.printArray( " Your turn player "+t.getTurn() );
+		
+end
+
+rule "Read player move from keyboard"
+	salience - 10
+    when
+		t : Context(gameover == false, turn == "y" )
+		not ( Playermove() )
+    then
+      System.out.print( "Your move player y  >" );
+      Scanner keyboard = new Scanner(System.in);
+      int pos = keyboard.nextInt() ;
+      Playermove p = new Playermove(pos);
+      insert (p ) ;
+      System.out.println("Player y, you wrote:"+pos+"= ["+p.getRow()+"]["+p.getCol()+"]");            
+end
+
+rule "player try taken move"
+	when
+		t : Context(gameover == false, turn == "y" )
+		p : Playermove( )
+		c : Cell( player != " " , row == p.getRow(), col == p.getCol() )
+	then
+		retract ( p ) ;
+		System.out.println("   ** Bad player move: ["+p.getRow()+"]["+p.getCol()+"] is already taken!" );
+end
+
+rule "player makes move"
+	when
+		t : Context(gameover == false, turn == "y" )
+		p : Playermove()  
+		c : Cell( player == " " , row == p.getRow(), col == p.getCol() )
+	then
+  		//System.out.println("Player making move: ["+p.getRow()+"]["+p.getCol()+"]" );
+		modify  ( c ) { setPlayer("y") }; 
+		modify  ( t ) { setTurn("x") };  
+		retract ( p )  
+end
