@@ -81,3 +81,26 @@ rule "game over by tie"
      PlayGame.printArray( "Game over. It is a Tie!!" );
      modify (t) { setGameover(true) };
 end   
+
+//this rule wont scale to larger matrixes :( 
+rule "game over by cross 0"
+   when
+     t : Context(gameover == false )
+     c : Cell(player != ' ', row == 1, col == 1) 
+     exists ( Cell(player == c.getPlayer() , row == 0, col == 0))
+     exists ( Cell(player == c.getPlayer() , row == 2, col == 2))     
+   then
+     PlayGame.printArray( "Game over. Player "+c.getPlayer()+" wins on cross 0 ");
+     modify (t) { setGameover(true) };
+end   
+
+rule "game over by cross 1"
+   when
+     t : Context(gameover == false )
+     c : Cell(player != ' ', row == 1, col == 1) 
+     exists ( Cell(player == c.getPlayer() , row == 0, col == 2))
+     exists ( Cell(player == c.getPlayer() , row == 2, col == 0))
+   then
+     PlayGame.printArray( "Game over. Player "+c.getPlayer()+" wins on cross 1");
+     modify (t) { setGameover(true) };
+end   
