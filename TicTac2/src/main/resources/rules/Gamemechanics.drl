@@ -53,3 +53,16 @@ rule "player makes move"
 		modify  ( t ) { setTurn("x") };  
 		retract ( p )  
 end
+
+rule "choose start player"
+   when
+   		t : Context(gameover == false, turn == " " )
+   then
+      System.out.print( "AI = 0, Player = 1  Choose who starts 0/1 >" );
+      Scanner keyboard = new Scanner(System.in);
+      int pos = keyboard.nextInt() ;
+      char play = (char) (120+pos);
+      modify  ( t ) { setTurn(""+play) };  
+      System.out.println("Player "+play+" starts");            
+end
+   

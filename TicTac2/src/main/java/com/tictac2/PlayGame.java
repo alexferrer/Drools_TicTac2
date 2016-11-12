@@ -59,7 +59,7 @@ public class PlayGame {
     	Cell cell9 = new Cell(2,2,s[8],2);  kSession.insert(cell9);cellarray[2][2]=cell9;
     	
     	//X starts game
-    	Context context = new Context("x");   kSession.insert(context);
+    	Context context = new Context(" ");   kSession.insert(context);
 
     }
     
