@@ -83,6 +83,7 @@ rule "game over by tie"
 end   
 
 //this rule wont scale to larger matrixes :( 
+/*
 rule "game over by cross 0"
    when
      t : Context(gameover == false )
@@ -93,14 +94,29 @@ rule "game over by cross 0"
      PlayGame.printArray( "Game over. Player "+c.getPlayer()+" wins on cross 0 ");
      modify (t) { setGameover(true) };
 end   
-
-rule "game over by cross 1"
-   when
+*/
+rule "game over by any size cross left to down"
+  dialect "mvel"
+  when
      t : Context(gameover == false )
-     c : Cell(player != ' ', row == 1, col == 1) 
-     exists ( Cell(player == c.getPlayer() , row == 0, col == 2))
-     exists ( Cell(player == c.getPlayer() , row == 2, col == 0))
-   then
-     PlayGame.printArray( "Game over. Player "+c.getPlayer()+" wins on cross 1");
+     //need to define a player.. using player turn.. ugly!
+     forall( n : Cell(row == col ) 
+                 Cell( this == n, player != t.turn && player !=' ' )
+           )
+  then
+     PlayGame.printArray( "Game over. Player "+t.turn+" looses on cross LR ");
      modify (t) { setGameover(true) };
-end   
+end
+
+rule "game over by size 3 cross right up"
+  dialect "mvel"
+  when
+     t : Context(gameover == false )
+     
+     forall( n : Cell( (row + col) == 2 ) 
+                 Cell( this == n, player == 'x' )
+           )
+  then
+     PlayGame.printArray( "Game over. Player X wins on cross RL ");
+     modify (t) { setGameover(true) };
+end

@@ -41,7 +41,8 @@ public class PlayGame {
     //setup the env for the particular test
     // x wins on first row 
     private static void setup(KieSession kSession){
-    	
+
+    	//String[] s = {"y"," "," "," ","y"," "," "," "," ",}; //standard game
     	String[] s = {" "," "," "," "," "," "," "," "," ",}; //standard game
     	//String[] s = {"x","x","x"," "," "," "," "," "," ",}; //row win
     	//String[] s = {"x"," "," ","x"," "," ","x"," "," ",}; //col win
